@@ -1,18 +1,37 @@
 <?php
 session_start();
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['inner'])) {
+        // Inner join button is clicked
+        $redirectUrl = "php/inner_join.php";
+    } elseif (isset($_POST['full'])) {
+        // Full join button is clicked
+        $redirectUrl = "php/full_join.php";
+    } elseif (isset($_POST['right'])) {
+        // Right join button is clicked
+        $redirectUrl = "php/right_join.php";
+    } elseif (isset($_POST['left'])) {
+        // Left join button is clicked
+        $redirectUrl = "php/left_join.php";
+    } elseif (isset($_POST['cross'])) {
+        // Cross join button is clicked
+        $redirectUrl = "php/cross_join.php";
+    }
 
-
+    // Redirect to the corresponding page
+    if (isset($redirectUrl)) {
+        header("Location: $redirectUrl");
+        exit;
+    }
+}
 
 try {
-    include_once('assets/php/db_connect.php');
+    include_once('php/db_connect.php');
 
     // Fetch all users from the database
     $query = $conn->query("SELECT * FROM users");
     $users = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    // Iterate over the users and generate HTML code for each user card
-   
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
@@ -22,41 +41,24 @@ try {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="welcome.css">
     <title>Welcome</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Montserrat, sans-serif;
-            background: linear-gradient(120deg, #2980b9, #8e44ad);
-            height: 300vh;
-            overflow: hidden;
-        }
-
-        .scrollable-container {
-            max-height: 300vh; /* Adjust the height as needed */
-            overflow-y: auto;
-        }
-
-        .user-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            color: #333;
-        }
-
-        h2 {
-            margin-top: 0;
-        }
+      
     </style>
 </head>
 <body>
+    <div class="nav">
+        <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post">
+            <input type="submit" name='inner' value="inner join">
+            <input type="submit" name='full' value="full join">
+            <input type="submit" name='right' value="right join">
+            <input type="submit" name='left' value="left join">
+            <input type="submit" name='cross' value="cross join">
+        </form>
+    </div>
     <div class="scrollable-container">
         <?php
-        // Connect to your database and retrieve users
-
         // Iterate over the users and generate HTML code for each user card
         foreach ($users as $user) {
             echo "<div class='user-card'>";

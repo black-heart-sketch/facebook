@@ -33,7 +33,8 @@
             header("Location: ../welcome.php");
         }
         else{
-            echo "Invalid Details";
+            
+           
         }
     
         
